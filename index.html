@@ -1,0 +1,956 @@
+<title>Ruédalo</title>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper:#F2F0EA; --surface:#FBFAF7; --surface2:#EAE7DE;
+  --ink:#20242B; --ink2:#565B64; --muted:#83878F; --line:#DBD7CB;
+  --accent:#B87D0A; --accent-ink:#8F6108; --accent-soft:rgba(184,125,10,.12);
+  --ch1:#B87D0A; --ch2:#00806A;
+  --ok:#2F7D44; --crit:#C2452C; --warn:#9A6A08;
+  --phone:#14181F; --phone-screen:#F7F6F2;
+  --shadow:0 1px 2px rgba(32,36,43,.06),0 8px 28px rgba(32,36,43,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#14181F; --surface:#1C222B; --surface2:#232A35;
+    --ink:#EBEAE4; --ink2:#A9ADB4; --muted:#7C818A; --line:#2E3541;
+    --accent:#E0A62E; --accent-ink:#E8B34A; --accent-soft:rgba(224,166,46,.14);
+    --ch1:#C0851A; --ch2:#1D9A85;
+    --ok:#4CA366; --crit:#DE6B4F; --warn:#D69A2B;
+    --phone:#0B0E13; --phone-screen:#171C24;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 32px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#F2F0EA; --surface:#FBFAF7; --surface2:#EAE7DE;
+  --ink:#20242B; --ink2:#565B64; --muted:#83878F; --line:#DBD7CB;
+  --accent:#B87D0A; --accent-ink:#8F6108; --accent-soft:rgba(184,125,10,.12);
+  --ch1:#B87D0A; --ch2:#00806A;
+  --ok:#2F7D44; --crit:#C2452C; --warn:#9A6A08;
+  --phone:#14181F; --phone-screen:#F7F6F2;
+  --shadow:0 1px 2px rgba(32,36,43,.06),0 8px 28px rgba(32,36,43,.08);
+}
+:root[data-theme="dark"]{
+  --paper:#14181F; --surface:#1C222B; --surface2:#232A35;
+  --ink:#EBEAE4; --ink2:#A9ADB4; --muted:#7C818A; --line:#2E3541;
+  --accent:#E0A62E; --accent-ink:#E8B34A; --accent-soft:rgba(224,166,46,.14);
+  --ch1:#C0851A; --ch2:#1D9A85;
+  --ok:#4CA366; --crit:#DE6B4F; --warn:#D69A2B;
+  --phone:#0B0E13; --phone-screen:#171C24;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 32px rgba(0,0,0,.35);
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:Charter,"Bitstream Charter","Sitka Text",Cambria,Georgia,serif;
+  font-size:17px; line-height:1.62;
+}
+.disp{font-family:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif}
+.mono,code,.log,.tick{font-family:"Cascadia Code",ui-monospace,"SF Mono",Consolas,monospace}
+h1,h2,h3,h4{font-family:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif;
+  line-height:1.12; text-wrap:balance; margin:0}
+p{margin:0 0 1em}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+button{font:inherit; cursor:pointer}
+.num{font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1060px; margin:0 auto; padding:0 24px}
+.eyebrow{font-family:"Segoe UI",system-ui,sans-serif; font-size:.72rem; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink)}
+.lead{font-size:1.12rem; color:var(--ink2); max-width:62ch}
+section{padding:72px 0}
+.sec-head{margin-bottom:36px; max-width:66ch}
+.sec-head h2{font-size:clamp(1.6rem,3.4vw,2.2rem); font-weight:800; letter-spacing:-.015em; margin:.3em 0 .4em}
+
+/* road divider */
+.road{border:0; height:4px; margin:0; background:
+  repeating-linear-gradient(90deg,var(--accent) 0 34px,transparent 34px 58px);
+  opacity:.35}
+
+/* ============ HEADER ============ */
+header.top{position:sticky; top:0; z-index:50; background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.nav{display:flex; align-items:center; gap:22px; padding:14px 24px; max-width:1060px; margin:0 auto}
+.brand{font-weight:800; font-size:1.15rem; letter-spacing:-.01em; display:flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none}
+.brand .dot{width:22px; height:22px; border-radius:50%; background:var(--accent);
+  display:inline-grid; place-items:center; color:var(--paper); font-size:.7rem; font-weight:800}
+.nav nav{margin-left:auto; display:flex; gap:18px; flex-wrap:wrap}
+.nav nav a{font-family:"Segoe UI",system-ui,sans-serif; font-size:.85rem; font-weight:600;
+  color:var(--ink2); text-decoration:none}
+.nav nav a:hover{color:var(--accent-ink)}
+
+/* ============ HERO ============ */
+.hero{padding:88px 0 64px}
+.hero h1{font-size:clamp(2.6rem,7vw,4.6rem); font-weight:800; letter-spacing:-.03em}
+.hero h1 em{font-style:normal; color:var(--accent-ink)}
+.hero .lead{margin-top:22px; font-size:1.22rem}
+.facts{display:flex; flex-wrap:wrap; gap:0; margin-top:44px; border:1px solid var(--line);
+  border-radius:10px; overflow:hidden; background:var(--surface)}
+.fact{flex:1 1 180px; padding:18px 22px; border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+.fact b{display:block; font-family:"Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  font-size:1.45rem; font-weight:800; letter-spacing:-.02em}
+.fact span{font-family:"Segoe UI",system-ui,sans-serif; font-size:.78rem; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em; font-weight:600}
+
+/* ============ CARDS / GRIDS ============ */
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:18px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:24px}
+.card h3{font-size:1.02rem; font-weight:700; margin-bottom:.5em}
+.card p{font-size:.95rem; color:var(--ink2); margin:0}
+.kicker{font-family:"Segoe UI",system-ui,sans-serif; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px}
+
+/* escalera */
+.ladder{display:grid; gap:10px; margin-top:8px}
+.rung{display:grid; grid-template-columns:44px 1fr auto; gap:14px; align-items:center;
+  background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:13px 16px}
+.rung .lvl{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-weight:700; font-size:.95rem;
+  width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
+  background:var(--surface2); color:var(--ink2)}
+.rung.core{border-color:var(--accent)}
+.rung.core .lvl{background:var(--accent); color:#fff}
+.rung b{font-family:"Segoe UI",system-ui,sans-serif; font-size:.95rem}
+.rung small{display:block; color:var(--ink2); font-size:.85rem}
+.rung .when{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.78rem; color:var(--muted); white-space:nowrap}
+
+/* ============ DEMO ============ */
+#demo{background:var(--surface2)}
+.demo-grid{display:grid; grid-template-columns:minmax(280px,1fr) minmax(320px,460px); gap:44px; align-items:start}
+@media (max-width:840px){.demo-grid{grid-template-columns:1fr}}
+.tabs{display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap}
+.tab{border:1px solid var(--line); background:var(--surface); color:var(--ink2); border-radius:99px;
+  padding:8px 18px; font-family:"Segoe UI",system-ui,sans-serif; font-weight:600; font-size:.88rem}
+.tab[aria-selected="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.demo-copy h3{font-size:1.25rem; font-weight:800; margin-bottom:.5em}
+.demo-copy p{color:var(--ink2); font-size:.98rem}
+.demo-copy ul{margin:0 0 1em; padding-left:1.1em; color:var(--ink2); font-size:.95rem}
+.demo-copy li{margin-bottom:.4em}
+
+/* phone */
+.stage{display:flex; justify-content:center}
+.phone{width:320px; background:var(--phone); border-radius:34px; padding:12px; box-shadow:var(--shadow)}
+.screen{background:var(--phone-screen); border-radius:24px; height:600px; overflow:hidden;
+  display:flex; flex-direction:column; position:relative}
+.statusbar{display:flex; justify-content:space-between; padding:10px 18px 6px;
+  font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.68rem; color:var(--muted)}
+.appbar{padding:6px 18px 12px; display:flex; align-items:center; gap:8px}
+.appbar b{font-family:"Segoe UI Variable Display","Segoe UI",system-ui,sans-serif; font-weight:800; font-size:1.05rem}
+.appbar .chip{margin-left:auto}
+.chip{font-family:"Segoe UI",system-ui,sans-serif; font-size:.68rem; font-weight:700; padding:3px 10px;
+  border-radius:99px; background:var(--accent-soft); color:var(--accent-ink)}
+.chip.ok{background:color-mix(in srgb,var(--ok) 15%,transparent); color:var(--ok)}
+.chip.crit{background:color-mix(in srgb,var(--crit) 15%,transparent); color:var(--crit)}
+.appbody{flex:1; overflow-y:auto; padding:4px 14px 16px}
+.appbody::-webkit-scrollbar{width:0}
+
+.carcard{background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; margin-bottom:10px; width:100%; text-align:left; color:var(--ink); display:block}
+.carcard:hover{border-color:var(--accent)}
+.carcard .row1{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.carcard b{font-family:"Segoe UI",system-ui,sans-serif; font-size:.92rem}
+.carcard .price{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-weight:700; font-size:.92rem}
+.carcard .meta{font-family:"Segoe UI",system-ui,sans-serif; font-size:.75rem; color:var(--muted); margin-top:3px; display:flex; gap:10px; flex-wrap:wrap}
+.plate{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.66rem; border:1px solid var(--line);
+  border-radius:3px; padding:0 5px; color:var(--ink2)}
+
+.detail-h{display:flex; align-items:center; gap:10px; margin:4px 0 12px}
+.backbtn{border:1px solid var(--line); background:var(--surface); border-radius:8px; width:30px; height:30px; color:var(--ink2); font-size:.9rem}
+.bill{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px}
+.bill .li{display:flex; justify-content:space-between; font-size:.86rem; padding:5px 0; color:var(--ink2)}
+.bill .li b{color:var(--ink)}
+.bill .li.total{border-top:1px dashed var(--line); margin-top:6px; padding-top:10px; font-size:.95rem}
+.bill .li .num{font-family:"Cascadia Code",ui-monospace,Consolas,monospace}
+.note{font-family:"Segoe UI",system-ui,sans-serif; font-size:.75rem; color:var(--muted); margin-top:10px; line-height:1.5}
+.cta{width:100%; margin-top:12px; background:var(--accent); border:0; color:#fff; font-weight:700;
+  font-family:"Segoe UI",system-ui,sans-serif; padding:13px; border-radius:10px; font-size:.95rem}
+.cta:hover{filter:brightness(1.06)}
+.steps{list-style:none; margin:14px 0 0; padding:0}
+.steps li{display:flex; gap:10px; align-items:center; font-family:"Segoe UI",system-ui,sans-serif;
+  font-size:.86rem; padding:9px 0; border-bottom:1px solid var(--line); color:var(--ink2)}
+.steps li:last-child{border-bottom:0}
+.tickmark{width:20px; height:20px; border-radius:50%; background:color-mix(in srgb,var(--ok) 16%,transparent);
+  color:var(--ok); display:inline-grid; place-items:center; font-size:.7rem; font-weight:800; flex:none}
+
+/* owner map */
+.mapbox{background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+.mapbox svg{display:block; width:100%; height:auto}
+.telem{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px}
+.tcell{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:10px 12px}
+.tcell span{font-family:"Segoe UI",system-ui,sans-serif; font-size:.66rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.08em; color:var(--muted); display:block}
+.tcell b{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:1.05rem; font-weight:700}
+
+/* control console */
+.console{width:100%; max-width:460px; background:var(--phone); border-radius:14px; padding:16px;
+  box-shadow:var(--shadow); color:#D8DCE2}
+.console .cbar{display:flex; align-items:center; gap:8px; margin-bottom:12px}
+.console .cbar b{font-family:"Segoe UI",system-ui,sans-serif; font-size:.85rem; color:#EBEAE4}
+.console .cbar .lights{display:flex; gap:5px; margin-left:auto}
+.console .cbar .lights i{width:9px; height:9px; border-radius:50%; background:#3A4250; display:block}
+.scen{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap}
+.scen button{flex:1; min-width:150px; border:1px solid #3A4250; background:#1D242E; color:#D8DCE2;
+  border-radius:8px; padding:9px 10px; font-family:"Segoe UI",system-ui,sans-serif; font-size:.8rem; font-weight:600}
+.scen button:hover:not(:disabled){border-color:#E0A62E; color:#E8B34A}
+.scen button:disabled{opacity:.45; cursor:default}
+.gates{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:12px}
+.gate{background:#1D242E; border:1px solid #2A3240; border-radius:8px; padding:8px 10px}
+.gate span{font-family:"Segoe UI",system-ui,sans-serif; font-size:.62rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.07em; color:#7C838E; display:block}
+.gate b{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.78rem; font-weight:600; color:#AEB4BD}
+.gate.pass{border-color:#2F7D44}.gate.pass b{color:#5CBF7A}
+.gate.wait{border-color:#9A6A08}.gate.wait b{color:#E0A62E}
+.gate.block{border-color:#C2452C}.gate.block b{color:#E5735A}
+.log{background:#0B0E13; border-radius:8px; padding:12px; height:238px; overflow-y:auto;
+  font-size:.74rem; line-height:1.7; color:#9BA3AE}
+.log .t{color:#5C6570; margin-right:8px}
+.log .hl{color:#E8B34A}
+.log .okx{color:#5CBF7A}
+.log .cx{color:#E5735A}
+.speedline{display:flex; align-items:center; gap:10px; margin:10px 0 12px;
+  font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.78rem}
+.speedbar{flex:1; height:6px; background:#1D242E; border-radius:99px; overflow:hidden}
+.speedbar i{display:block; height:100%; background:#E0A62E; border-radius:99px; width:0%; transition:width .5s}
+
+/* ============ MODELO ============ */
+.split{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start}
+@media (max-width:840px){.split{grid-template-columns:1fr}}
+.flow{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:22px}
+.flow .frow{display:grid; grid-template-columns:130px 1fr 74px; gap:12px; align-items:center; padding:9px 0}
+.flow .frow span{font-family:"Segoe UI",system-ui,sans-serif; font-size:.85rem; color:var(--ink2)}
+.flow .frow .amount{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-weight:700; text-align:right}
+.fbar{height:26px; border-radius:5px; background:var(--surface2); overflow:hidden; display:flex; gap:2px}
+.fbar i{display:block; height:100%}
+.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:22px}
+.tile{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px}
+.tile b{display:block; font-family:"Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  font-size:1.5rem; font-weight:800; letter-spacing:-.02em}
+.tile span{font-family:"Segoe UI",system-ui,sans-serif; font-size:.76rem; color:var(--muted)}
+.tile small{display:block; font-family:"Segoe UI",system-ui,sans-serif; font-size:.72rem; color:var(--muted); margin-top:4px}
+
+/* charts */
+.chart-card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:22px; position:relative}
+.chart-card h3{font-size:1rem; font-weight:700}
+.chart-card .sub{font-family:"Segoe UI",system-ui,sans-serif; font-size:.8rem; color:var(--muted); margin:2px 0 14px}
+.legend{display:flex; gap:16px; font-family:"Segoe UI",system-ui,sans-serif; font-size:.78rem; color:var(--ink2); margin-bottom:8px}
+.legend i{width:14px; height:3px; border-radius:2px; display:inline-block; vertical-align:middle; margin-right:6px}
+.tooltip{position:absolute; pointer-events:none; background:var(--ink); color:var(--paper);
+  font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.72rem; line-height:1.6;
+  padding:8px 11px; border-radius:7px; opacity:0; transition:opacity .12s; white-space:nowrap; z-index:5}
+.hbars{display:grid; gap:10px}
+.hrow{display:grid; grid-template-columns:190px 1fr 84px; gap:12px; align-items:center}
+@media (max-width:560px){.hrow{grid-template-columns:120px 1fr 74px}}
+.hrow span{font-family:"Segoe UI",system-ui,sans-serif; font-size:.83rem; color:var(--ink2)}
+.hrow .track{height:22px; background:var(--surface2); border-radius:4px; overflow:hidden}
+.hrow .track i{display:block; height:100%; background:var(--ch1); border-radius:4px 4px 4px 4px; min-width:3px}
+.hrow .val{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.8rem; text-align:right}
+details.dataview{margin-top:14px; font-family:"Segoe UI",system-ui,sans-serif; font-size:.8rem; color:var(--muted)}
+details.dataview summary{cursor:pointer}
+details.dataview table{border-collapse:collapse; margin-top:8px; width:100%}
+details.dataview td,details.dataview th{border:1px solid var(--line); padding:5px 9px; text-align:right; font-variant-numeric:tabular-nums}
+details.dataview th:first-child,details.dataview td:first-child{text-align:left}
+
+/* lexicon */
+.lex{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:640px){.lex{grid-template-columns:1fr}}
+.lexcol{border-radius:10px; border:1px solid var(--line); background:var(--surface); padding:18px 20px}
+.lexcol h4{font-size:.85rem; margin-bottom:10px}
+.lexcol.no h4{color:var(--crit)}.lexcol.yes h4{color:var(--ok)}
+.words{display:flex; flex-wrap:wrap; gap:7px}
+.words b{font-family:"Segoe UI",system-ui,sans-serif; font-weight:600; font-size:.8rem;
+  padding:4px 11px; border-radius:99px; background:var(--surface2); color:var(--ink2)}
+.lexcol.no .words b{text-decoration:line-through; opacity:.75}
+
+/* roadmap */
+.timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px}
+.phase{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 20px; position:relative}
+.phase::before{content:""; position:absolute; top:0; left:20px; right:20px; height:3px; border-radius:0 0 3px 3px; background:var(--accent); opacity:.55}
+.phase .ph{font-family:"Cascadia Code",ui-monospace,Consolas,monospace; font-size:.72rem; color:var(--accent-ink); font-weight:700}
+.phase b{display:block; font-family:"Segoe UI",system-ui,sans-serif; font-size:.95rem; margin:4px 0 6px}
+.phase p{font-size:.84rem; color:var(--ink2); margin:0}
+
+/* tables */
+.tblwrap{overflow-x:auto}
+table.doc{border-collapse:collapse; width:100%; font-family:"Segoe UI",system-ui,sans-serif; font-size:.88rem}
+table.doc th{text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); padding:10px 14px; border-bottom:2px solid var(--line)}
+table.doc td{padding:11px 14px; border-bottom:1px solid var(--line); color:var(--ink2); vertical-align:top}
+table.doc td b{color:var(--ink)}
+
+/* footer */
+footer{padding:52px 0 64px; border-top:1px solid var(--line)}
+footer p{font-size:.85rem; color:var(--muted); max-width:70ch}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+
+<header class="top">
+  <div class="nav">
+    <a class="brand disp" href="#top"><span class="dot">R</span>Ruédalo</a>
+    <nav>
+      <a href="#problema">Problema</a>
+      <a href="#solucion">Solución</a>
+      <a href="#demo">Demo</a>
+      <a href="#modelo">Modelo</a>
+      <a href="#fondo">Fondo</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<div class="wrap hero">
+  <h1>El carro <em>vuelve</em>.</h1>
+  <p class="lead">Ruédalo es la infraestructura de confianza para el alquiler de autos entre
+  particulares en Venezuela. Competimos por el
+  <strong>control del activo</strong> — telemetría con inmovilización remota, un fondo de garantía
+  y un motor de decisión que solo bloquea cuando es seguro y contractualmente justificado.</p>
+  <div class="facts num">
+    <div class="fact"><b>22–25%</b><span>Take rate</span></div>
+    <div class="fact"><b>Asset-light</b><span>No somos dueños de la flota</span></div>
+  </div>
+</div>
+
+<hr class="road">
+
+<!-- ============ PROBLEMA ============ -->
+<section id="problema"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">El problema</span>
+    <h2>El mercado ya existe. Lo que falta es la garantía.</h2>
+    <p class="lead">Hoy el alquiler informal se resuelve en grupos de WhatsApp e Instagram, y no crece
+    porque ninguna de las partes puede resolver sola la única pregunta que importa.</p>
+  </div>
+  <div class="grid3">
+    <div class="card"><span class="kicker">El dueño</span>
+      <h3>Exposición binaria</h3>
+      <p>Su carro es su activo más valioso y casi irreemplazable al costo de reposición local.
+      Entregarlo es apostar: o vuelve, o lo pierde. No existe mecanismo de recuperación ni respaldo económico creíble.</p></div>
+    <div class="card"><span class="kicker">El arrendatario</span>
+      <h3>Mercado cerrado</h3>
+      <p>Sin oferta estructurada ni precios comparables. Todo depende de confianza personal,
+      lo que deja fuera a quien llega de afuera o no tiene red local — justo el cliente que más paga.</p></div>
+    <div class="card"><span class="kicker">El asegurador</span>
+      <h3>Cobertura inexistente</h3>
+      <p>La póliza estándar cubre responsabilidad civil, no a un tercero conduciendo bajo contrato
+      de arrendamiento. Sin respaldo económico, la oferta no escala.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ SOLUCION ============ -->
+<section id="solucion" style="padding-top:0"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">La solución</span>
+    <h2>Una capa de gestión de riesgo, no una app con GPS</h2>
+    <p class="lead">Tres capas sobre la misma transacción: marketplace con verificación estricta,
+    telemetría con corte de arranque, y una escalera de recuperación donde el bloqueo es el último
+    recurso — nunca el primero.</p>
+  </div>
+  <div class="split">
+    <div>
+      <div class="ladder">
+        <div class="rung"><span class="lvl">1</span><div><b>Notificación de vencimiento</b><small>Recordatorio y opción de extender pagando</small></div><span class="when">Al vencer</span></div>
+        <div class="rung"><span class="lvl">2</span><div><b>Advertencia de cargo</b><small>Cargo por extensión no comunicada</small></div><span class="when">+1 hora</span></div>
+        <div class="rung"><span class="lvl">3</span><div><b>Bloqueo diferido</b><small>El vehículo sigue andando; al próximo apagado en zona segura, no vuelve a encender</small></div><span class="when">Horas después</span></div>
+        <div class="rung"><span class="lvl">4</span><div><b>Bloqueo inmediato</b><small>Solo causa grave: salida de geocerca, señal de robo</small></div><span class="when">Causa grave</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <span class="kicker">Restricción no negociable</span>
+        <h3>Nunca se apaga un vehículo en movimiento</h3>
+        <p>El sistema impide el <em>arranque</em>. La validación de velocidad cero sostenida es una
+        condición determinista — nunca probabilística — previa a cualquier ejecución. Nadie queda
+        inmovilizado en una vía sola de madrugada.</p>
+      </div>
+      <div class="card">
+        <span class="kicker">Autoridad asimétrica</span>
+        <h3>El algoritmo solo puede vetar o posponer</h3>
+        <p>El derecho a inmovilizar nace del contrato, no del modelo. La capa algorítmica únicamente
+        difiere la ejecución cuando el momento o el lugar son inseguros: el sistema nunca bloquea de
+        más — solo de menos, por prudencia. Esa asimetría es jurídicamente defendible.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<hr class="road">
+
+<!-- ============ DEMO ============ -->
+<section id="demo"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">Demo interactiva</span>
+    <h2>El producto, en tres vistas</h2>
+    <p class="lead">Prototipo navegable con datos simulados. La vista de Centro de Control ejecuta
+    la simulación completa de un bloqueo diferido en tiempo comprimido.</p>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Vistas de la demo">
+    <button class="tab" role="tab" id="tab-driver" aria-selected="true" onclick="setView('driver')">📱 Conductor</button>
+    <button class="tab" role="tab" id="tab-owner" aria-selected="false" onclick="setView('owner')">🔑 Dueño</button>
+    <button class="tab" role="tab" id="tab-ops" aria-selected="false" onclick="setView('ops')">🖥 Centro de control</button>
+  </div>
+
+  <div class="demo-grid">
+    <div class="demo-copy">
+      <div id="copy-driver">
+        <h3>Reservar con garantía</h3>
+        <p>El arrendatario ve oferta estructurada con precios comparables por primera vez.
+        La verificación es requisito de entrada, no un extra:</p>
+        <ul>
+          <li><b>Identidad y licencia validadas</b> antes de poder reservar.</li>
+          <li><b>Precio transparente:</b> tarifa + service fee (8–14% según historial). El buen comportamiento baja el fee.</li>
+          <li><b>Depósito reembolsable de $300</b> — es el deducible del Plan de Protección, prefondeado porque en Venezuela no hay <em>hold</em> de tarjeta de crédito. Se devuelve a las 48 h.</li>
+        </ul>
+        <p>Toca un vehículo para ver el desglose completo.</p>
+      </div>
+      <div id="copy-owner" hidden>
+        <h3>El dueño nunca pierde de vista su activo</h3>
+        <p>Panel en vivo durante cada alquiler:</p>
+        <ul>
+          <li><b>Posición en tiempo real</b> y geocerca configurable (línea discontinua en el mapa).</li>
+          <li><b>Telemetría continua:</b> velocidad, estado del contrato, <em>heartbeat</em> del dispositivo — la pérdida de señal es en sí misma un evento de riesgo.</li>
+          <li><b>Liquidación clara:</b> recibe el 85% de la tarifa; la suscripción de $5–8/mes lo ancla incluso en meses sin alquiler.</li>
+        </ul>
+      </div>
+      <div id="copy-ops" hidden>
+        <h3>La escalera, ejecutada con disciplina</h3>
+        <p>Ejecuta un escenario y observa las cuatro capas del motor de decisión:</p>
+        <ul>
+          <li><b>Capa 1 — Causa contractual:</b> regla dura, sin IA. ¿Existe causa taxativa?</li>
+          <li><b>Capa 2 — Compuerta de velocidad:</b> determinista. Velocidad 0 sostenida o no hay bloqueo. Nunca probabilística.</li>
+          <li><b>Capa 3 — Contexto:</b> ¿es seguro este lugar y momento?</li>
+          <li><b>Capa 4 — Operador humano:</b> en v1 confirma el 100% de los bloqueos.</li>
+        </ul>
+        <p>Cada decisión queda en log inmutable: entrada, resultado y operador responsable.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <!-- PHONE (driver / owner) -->
+      <div class="phone" id="phoneFrame">
+        <div class="screen">
+          <div class="statusbar num"><span>9:41</span><span>Ruédalo · CCS</span><span>▮▮▮</span></div>
+
+          <!-- DRIVER LIST -->
+          <div id="scr-driver-list" style="display:flex; flex-direction:column; flex:1; min-height:0">
+            <div class="appbar"><b>Disponibles cerca</b><span class="chip ok">✓ Verificado</span></div>
+            <div class="appbody">
+              <button class="carcard" onclick="openCar(0)">
+                <span class="row1"><b>Toyota Corolla 2016</b><span class="price num">$38/día</span></span>
+                <span class="meta"><span>★ 4,9 · 27 viajes</span><span class="plate">AB123CD</span><span>Chacao</span></span>
+              </button>
+              <button class="carcard" onclick="openCar(1)">
+                <span class="row1"><b>Chevrolet Aveo 2014</b><span class="price num">$30/día</span></span>
+                <span class="meta"><span>★ 4,7 · 12 viajes</span><span class="plate">AC456EF</span><span>La Candelaria</span></span>
+              </button>
+              <button class="carcard" onclick="openCar(2)">
+                <span class="row1"><b>Toyota Fortuner 2019</b><span class="price num">$65/día</span></span>
+                <span class="meta"><span>★ 5,0 · 31 viajes</span><span class="plate">AD789GH</span><span>Las Mercedes</span></span>
+              </button>
+              <p class="note">Todos los vehículos llevan telemetría con Plan de Protección incluido.
+              Precios en USD, paga en Bs., Zelle, USDT o tarjeta.</p>
+            </div>
+          </div>
+
+          <!-- DRIVER DETAIL -->
+          <div id="scr-driver-detail" style="display:none; flex-direction:column; flex:1; min-height:0">
+            <div class="appbody">
+              <div class="detail-h"><button class="backbtn" onclick="backToList()" aria-label="Volver">←</button>
+                <b class="disp" id="d-name" style="font-size:.98rem">Toyota Corolla 2016</b></div>
+              <div class="bill num">
+                <div class="li"><span id="d-days">3 días × $38</span><b class="num" id="d-base">$114,00</b></div>
+                <div class="li"><span>Service fee (10%) <span class="chip" style="font-size:.6rem">baja a 8% con historial</span></span><b class="num" id="d-fee">$11,40</b></div>
+                <div class="li"><span>Plan de Protección</span><b>Incluido</b></div>
+                <div class="li total"><span><b>Total a pagar</b></span><b class="num" id="d-total">$125,40</b></div>
+              </div>
+              <div class="bill num" style="margin-top:10px">
+                <div class="li"><span>Depósito reembolsable (deducible)</span><b class="num">$300,00</b></div>
+              </div>
+              <p class="note">El depósito se devuelve 48 h después de la devolución sin incidentes.
+              A partir del 5.º viaje sin incidentes: fee 8% y depósito reducido.</p>
+              <button class="cta" onclick="confirmRes()">Reservar</button>
+            </div>
+          </div>
+
+          <!-- DRIVER CONFIRM -->
+          <div id="scr-driver-confirm" style="display:none; flex-direction:column; flex:1; min-height:0">
+            <div class="appbody">
+              <div class="appbar" style="padding-left:0"><b>Reserva confirmada</b><span class="chip ok">R-2214</span></div>
+              <ul class="steps">
+                <li><span class="tickmark">✓</span>Identidad y licencia verificadas</li>
+                <li><span class="tickmark">✓</span>Contrato de arrendamiento aceptado <span class="plate">v3.2 · 9:41 · IP reg.</span></li>
+                <li><span class="tickmark">✓</span>Consentimiento de rastreo e inmovilización</li>
+                <li><span class="tickmark">✓</span>Depósito $300 recibido</li>
+                <li><span class="tickmark">✓</span>Inspección fotográfica de entrega</li>
+              </ul>
+              <p class="note">El contrato es entre tú y el dueño; Ruédalo actúa por mandato del dueño
+              para cobro, verificación y recuperación. La inmovilización solo procede por los supuestos
+              taxativos que acabas de firmar — nunca con el vehículo en movimiento.</p>
+              <button class="cta" onclick="backToList()">Entendido</button>
+            </div>
+          </div>
+
+          <!-- OWNER -->
+          <div id="scr-owner" style="display:none; flex-direction:column; flex:1; min-height:0">
+            <div class="appbar"><b>Mi Corolla</b><span class="chip">En alquiler · R-2214</span></div>
+            <div class="appbody">
+              <div class="mapbox">
+                <svg viewBox="0 0 280 190" role="img" aria-label="Mapa en vivo del vehículo con geocerca">
+                  <rect width="280" height="190" fill="var(--surface2)"/>
+                  <g stroke="var(--line)" stroke-width="5">
+                    <line x1="0" y1="55" x2="280" y2="48"/><line x1="0" y1="120" x2="280" y2="128"/>
+                    <line x1="60" y1="0" x2="52" y2="190"/><line x1="150" y1="0" x2="158" y2="190"/><line x1="225" y1="0" x2="220" y2="190"/>
+                  </g>
+                  <circle cx="140" cy="95" r="82" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="7 6" opacity=".8"/>
+                  <text x="140" y="22" text-anchor="middle" fill="var(--muted)" font-size="8" font-family="Consolas,monospace">GEOCERCA · ÁREA METROPOLITANA</text>
+                  <path id="route" d="M30,158 C70,150 78,100 120,96 S 180,110 205,78 S 240,50 252,42" fill="none" stroke="var(--ch2)" stroke-width="2" stroke-dasharray="3 4" opacity=".65"/>
+                  <circle id="carDot" r="6" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="telem num">
+                <div class="tcell"><span>Velocidad</span><b id="ownSpeed">41 km/h</b></div>
+                <div class="tcell"><span>Heartbeat</span><b style="color:var(--ok)">● 4 s</b></div>
+                <div class="tcell"><span>Contrato</span><b>47 h rest.</b></div>
+                <div class="tcell"><span>Ingresos jul</span><b>$102,00</b></div>
+              </div>
+              <p class="note">Recibes el 85% de la tarifa. Liquidación al cierre del alquiler, en el
+              riel que elijas. Suscripción de telemetría: $6/mes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPS CONSOLE -->
+      <div class="console" id="opsConsole" style="display:none">
+        <div class="cbar"><b>RUÉDALO OPS · Centro de control</b>
+          <div class="lights"><i></i><i></i><i style="background:#E0A62E"></i></div></div>
+        <div class="scen">
+          <button id="sc1" onclick="runScenario('venc')">▶ Vencimiento de contrato</button>
+          <button id="sc2" onclick="runScenario('geo')">▶ Salida de geocerca</button>
+          <button id="scReset" onclick="resetOps()" style="flex:0 1 auto; min-width:0">↺</button>
+        </div>
+        <div class="gates">
+          <div class="gate" id="g1"><span>1 · Causa contractual</span><b>—</b></div>
+          <div class="gate" id="g2"><span>2 · Velocidad cero</span><b>—</b></div>
+          <div class="gate" id="g3"><span>3 · Contexto seguro</span><b>—</b></div>
+          <div class="gate" id="g4"><span>4 · Operador humano</span><b>—</b></div>
+        </div>
+        <div class="speedline num"><span>VEH R-2214</span>
+          <div class="speedbar"><i id="opsSpeedBar"></i></div><span id="opsSpeedVal" style="min-width:64px; text-align:right">0 km/h</span></div>
+        <div class="log num" id="opsLog" aria-live="polite">
+          <div><span class="t">--:--</span>Selecciona un escenario. Tiempo comprimido: horas simuladas en segundos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<hr class="road">
+
+<!-- ============ MODELO ============ -->
+<section id="modelo"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">Modelo de negocio</span>
+    <h2>El take rate se reparte para que nadie huya al canal informal</h2>
+    <p class="lead">Un 25% cargado a un solo lado empuja al usuario de vuelta a WhatsApp — el
+    verdadero competidor. Dividido, cada parte percibe un costo tolerable y la plataforma captura lo mismo.</p>
+  </div>
+  <div class="split">
+    <div>
+      <div class="flow num">
+        <span class="kicker">Ejemplo · 3 días × $40/día</span>
+        <div class="frow"><span>Paga el arrendatario</span>
+          <div class="fbar"><i style="width:77%; background:var(--ch2)"></i><i style="width:23%; background:var(--ch1)"></i></div>
+          <span class="amount">$132</span></div>
+        <div class="frow"><span>Recibe el dueño (−15%)</span>
+          <div class="fbar"><i style="width:77%; background:var(--ch2)"></i></div>
+          <span class="amount">$102</span></div>
+        <div class="frow"><span><b style="color:var(--ink)">Plataforma (22,7%)</b></span>
+          <div class="fbar"><i style="width:23%; background:var(--ch1)"></i></div>
+          <span class="amount"><b>$30</b></span></div>
+      </div>
+      <div class="tiles num">
+        <div class="tile"><b>~$88</b><span>Ingreso neto / vehículo·mes</span></div>
+        <div class="tile"><b>$40–60</b><span>CAPEX hardware (único)</span><small>Se recupera en mes 1–2</small></div>
+        <div class="tile"><b>8→14%</b><span>Service fee por riesgo</span><small>Baja con historial limpio</small></div>
+        <div class="tile"><b>$5–8/mes</b><span>Suscripción telemetría</span><small>Recurrente, ancla al dueño</small></div>
+      </div>
+    </div>
+    <div>
+      <div class="chart-card" id="projCard">
+        <h3>Camino al equilibrio operativo</h3>
+        <p class="sub">Escenario base · USD/mes · supuestos a validar en piloto</p>
+        <div class="legend"><span><i style="background:var(--ch1)"></i>Ingreso neto</span>
+          <span><i style="background:var(--ch2)"></i>OPEX</span></div>
+        <svg id="projChart" viewBox="0 0 640 300" style="width:100%; height:auto" role="img"
+          aria-label="Proyección: el ingreso neto cruza el OPEX cerca del mes 12"></svg>
+        <div class="tooltip" id="projTip"></div>
+        <details class="dataview"><summary>Ver datos</summary>
+          <table><tr><th>Mes</th><th>Vehículos</th><th>Ingreso neto</th><th>OPEX</th><th>Resultado</th></tr>
+          <tr><td>6</td><td>40</td><td>$3.800</td><td>$9.000</td><td>−$5.200</td></tr>
+          <tr><td>12</td><td>150</td><td>$14.100</td><td>$13.000</td><td>+$1.100</td></tr>
+          <tr><td>18</td><td>300</td><td>$28.200</td><td>$17.000</td><td>+$11.200</td></tr>
+          <tr><td>24</td><td>450</td><td>$42.300</td><td>$22.000</td><td>+$20.300</td></tr></table>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="split" style="margin-top:40px">
+    <div class="chart-card" id="fundsCard">
+      <h3>Uso de fondos — US$150.000</h3>
+      <p class="sub">Runway estimado: 15–18 meses con equipo reducido</p>
+      <div class="hbars num" id="fundsBars"></div>
+      <div class="tooltip" id="fundsTip"></div>
+    </div>
+    <div class="card">
+      <span class="kicker">Cobros en la realidad venezolana</span>
+      <h3 style="font-size:1.1rem; margin-bottom:.6em">Multi-riel desde el día uno</h3>
+      <p style="font-size:.95rem">Pago móvil en Bs. · Zelle · USDT · tarjeta internacional (diáspora) ·
+      efectivo solo contra recibo. Sin <em>hold</em> de tarjeta para la mayoría, el depósito de garantía
+      es <b>prefondeado y reembolsable</b> — más fricción que en un mercado desarrollado, y exactamente
+      la fricción que impide que Turo entre.</p>
+      <p style="font-size:.95rem; margin-bottom:0"><b>Motor de demanda principal:</b> la diáspora que
+      visita — reserva con antelación, paga en USD desde el exterior y es el perfil de menor riesgo
+      de no devolución.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ FONDO ============ -->
+<section id="fondo" style="padding-top:0"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">Fondo de Garantía</span>
+    <h2>No es un seguro — y esa palabra importa</h2>
+    <p class="lead">La actividad aseguradora está reservada por ley (Sudeaseg). El encuadre es
+    contractual: el arrendatario asume responsabilidad total y la plataforma le vende una
+    <em>exoneración de cobro</em> por encima del deducible — la misma figura que usaron Turo y Airbnb
+    en sus primeras etapas.</p>
+  </div>
+  <div class="split">
+    <div>
+      <div class="lex">
+        <div class="lexcol yes"><h4 class="disp">Léxico obligatorio</h4>
+          <div class="words"><b>Plan de Protección</b><b>exoneración</b><b>límite de responsabilidad</b><b>deducible</b></div></div>
+        <div class="lexcol no"><h4 class="disp">Prohibido en app, web y contratos</h4>
+          <div class="words"><b>seguro</b><b>póliza</b><b>cobertura</b><b>siniestro</b><b>prima</b></div></div>
+      </div>
+      <div class="tiles num">
+        <div class="tile"><b>$35.000</b><span>Semilla en cuenta segregada</span></div>
+        <div class="tile"><b>8–12%</b><span>De cada reserva al fondo</span><small>~$12.000/mes a 300 veh.</small></div>
+        <div class="tile"><b>$10.000</b><span>Techo por evento</span><small>Encima responde el arrendatario</small></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="kicker">La condición de solvencia</span>
+      <h3 style="font-size:1.1rem; margin-bottom:.6em">Sin deducible, el fondo quiebra con daños menores</h3>
+      <div class="tblwrap"><table class="doc num">
+        <tr><td>Reclamos mensuales sin deducible (300 veh., 4%, $300 prom.)</td><td style="text-align:right"><b style="color:var(--crit)">−$14.400</b></td></tr>
+        <tr><td>Aporte mensual al fondo</td><td style="text-align:right"><b>+$12.000</b></td></tr>
+        <tr><td><b>Con deducible de $300:</b> 70–80% de reclamos menores no tocan el fondo</td><td style="text-align:right"><b style="color:var(--ok)">Solvente</b></td></tr>
+      </table></div>
+      <p style="font-size:.9rem; margin:14px 0 0">El fondo queda reservado para lo que importa: robo,
+      pérdida total y daño mayor. La política de deducibles no es un detalle operativo — es la
+      condición de solvencia del modelo, y se presenta con esa honestidad.</p>
+    </div>
+  </div>
+</div></section>
+
+<hr class="road">
+
+<!-- ============ MERCADO ============ -->
+<section id="mercado"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">Mercado y competencia</span>
+    <h2>Nadie más puede entrar — y eso es la tesis</h2>
+  </div>
+  <div class="split">
+    <div>
+      <div class="tiles num" style="margin-top:0">
+        <div class="tile"><b>$60–100M</b><span>TAM · alquiler vehicular VE/año</span><small>Estimación bottom-up, declarada</small></div>
+        <div class="tile"><b>$15–25M</b><span>SAM · P2P en 4 ciudades</span></div>
+        <div class="tile"><b>$1,4–2M</b><span>SOM · GBV a 24 meses</span><small>300+ vehículos</small></div>
+      </div>
+      <p style="font-size:.95rem; color:var(--ink2); margin-top:18px">Lo relevante no es el tamaño
+      local: la demanda ya se transacciona hoy por canales informales — no hay que crearla, hay que
+      capturarla. Y el activo que se construye (motor de inmovilización + dataset de riesgo) es
+      exportable a toda Latam con seguros débiles, y licenciable B2B a financiadoras y flotas.</p>
+    </div>
+    <div class="tblwrap"><table class="doc">
+      <tr><th>Competidor</th><th>Por qué no resuelve</th></tr>
+      <tr><td><b>Canal informal</b></td><td>Sin garantía ni recuperación. Es el competidor real — y la prueba de demanda</td></tr>
+      <tr><td><b>Rent-a-car tradicional</b></td><td>CAPEX-intensivo, flota pequeña, tarifas altas, no escala</td></tr>
+      <tr><td><b>Turo / Getaround</b></td><td>Estructuralmente no pueden entrar: sin seguros locales ni rieles de pago</td></tr>
+      <tr><td><b>Empresas de GPS</b></td><td>Tienen el dispositivo; no el contrato, el fondo ni el marketplace. Son proveedores</td></tr>
+    </table></div>
+  </div>
+</div></section>
+
+<!-- ============ ROADMAP ============ -->
+<section id="roadmap" style="padding-top:0"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">Hoja de ruta</span>
+    <h2>Densidad primero, expansión después</h2>
+  </div>
+  <div class="timeline">
+    <div class="phase"><span class="ph">FASE 0 · M1–3</span><b>Fundación</b>
+      <p>Estructura societaria, contratos validados por abogado local, proveedor de hardware, MVP.</p></div>
+    <div class="phase"><span class="ph">FASE 1 · M4–6</span><b>Piloto cerrado</b>
+      <p>25–40 vehículos en una ciudad. Validar utilización, reclamos y costo de recuperación. Operador humano al 100%.</p></div>
+    <div class="phase"><span class="ph">FASE 2 · M7–12</span><b>Densidad</b>
+      <p>150 vehículos. Ajuste de deducible y take rate con datos reales. Primera negociación con aseguradora.</p></div>
+    <div class="phase"><span class="ph">FASE 3 · M13–18</span><b>Expansión</b>
+      <p>300+ vehículos, segunda ciudad. Motor contextual v2. Prototipo de licenciamiento B2B.</p></div>
+  </div>
+</div></section>
+
+</main>
+
+<footer><div class="wrap">
+  <a class="brand disp" href="#top" style="margin-bottom:16px; display:inline-flex"><span class="dot">R</span>Ruédalo</a>
+  <p><b>Documento de trabajo — demo con datos simulados.</b> Las cifras de utilización, siniestralidad
+  y tarifa son supuestos a validar en el piloto cerrado de la Fase 1. Este material presenta estructura
+  estratégica, no asesoría legal; el encuadre del Plan de Protección requiere validación por abogado
+  venezolano especializado antes del lanzamiento.</p>
+</div></footer>
+
+<script>
+/* ============ helpers ============ */
+const $ = id => document.getElementById(id);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============ VIEW TABS ============ */
+function setView(v){
+  ['driver','owner','ops'].forEach(k=>{
+    $('tab-'+k).setAttribute('aria-selected', k===v ? 'true':'false');
+    $('copy-'+k).hidden = k!==v;
+  });
+  $('phoneFrame').style.display = v==='ops' ? 'none':'block';
+  $('opsConsole').style.display = v==='ops' ? 'block':'none';
+  $('scr-driver-list').style.display   = v==='driver' ? 'flex':'none';
+  $('scr-driver-detail').style.display = 'none';
+  $('scr-driver-confirm').style.display= 'none';
+  $('scr-owner').style.display = v==='owner' ? 'flex':'none';
+}
+
+/* ============ DRIVER FLOW ============ */
+const cars=[
+  {n:'Toyota Corolla 2016', d:38},
+  {n:'Chevrolet Aveo 2014', d:30},
+  {n:'Toyota Fortuner 2019', d:65}
+];
+const fmt = x => '$'+x.toFixed(2).replace('.',',');
+function openCar(i){
+  const c=cars[i], base=c.d*3, fee=base*.10;
+  $('d-name').textContent=c.n;
+  $('d-days').textContent=`3 días × $${c.d}`;
+  $('d-base').textContent=fmt(base);
+  $('d-fee').textContent=fmt(fee);
+  $('d-total').textContent=fmt(base+fee);
+  $('scr-driver-list').style.display='none';
+  $('scr-driver-detail').style.display='flex';
+}
+function backToList(){
+  $('scr-driver-detail').style.display='none';
+  $('scr-driver-confirm').style.display='none';
+  $('scr-driver-list').style.display='flex';
+}
+function confirmRes(){
+  $('scr-driver-detail').style.display='none';
+  $('scr-driver-confirm').style.display='flex';
+}
+
+/* ============ OWNER MAP ============ */
+(function(){
+  const route=$('route'), dot=$('carDot'), spd=$('ownSpeed');
+  if(!route) return;
+  const len=route.getTotalLength();
+  let t=0;
+  function step(){
+    t=(t+ (reduced?0:0.0016))%1;
+    const p=route.getPointAtLength(t*len);
+    dot.setAttribute('cx',p.x); dot.setAttribute('cy',p.y);
+    if(!reduced){
+      const v=Math.round(38+12*Math.sin(t*Math.PI*6));
+      spd.textContent=v+' km/h';
+      requestAnimationFrame(step);
+    }
+  }
+  if(reduced){ const p=route.getPointAtLength(len*.45); dot.setAttribute('cx',p.x); dot.setAttribute('cy',p.y); }
+  else requestAnimationFrame(step);
+})();
+
+/* ============ OPS SIMULATION ============ */
+let opsTimers=[], opsRunning=false;
+function logLine(t,html){
+  const d=document.createElement('div');
+  d.innerHTML='<span class="t">'+t+'</span>'+html;
+  $('opsLog').appendChild(d);
+  $('opsLog').scrollTop=$('opsLog').scrollHeight;
+}
+function setGate(n,state,txt){
+  const g=$('g'+n);
+  g.className='gate '+(state||'');
+  g.querySelector('b').textContent=txt;
+}
+function setSpeed(v){
+  $('opsSpeedBar').style.width=Math.min(100,v/80*100)+'%';
+  $('opsSpeedVal').textContent=v+' km/h';
+}
+function resetOps(){
+  opsTimers.forEach(clearTimeout); opsTimers=[]; opsRunning=false;
+  $('sc1').disabled=false; $('sc2').disabled=false;
+  [1,2,3,4].forEach(n=>setGate(n,'','—'));
+  setSpeed(0);
+  $('opsLog').innerHTML='<div><span class="t">--:--</span>Selecciona un escenario. Tiempo comprimido: horas simuladas en segundos.</div>';
+}
+function seq(steps){
+  let t=0;
+  steps.forEach(([delay,fn])=>{
+    t+=reduced?60:delay;
+    opsTimers.push(setTimeout(fn,t));
+  });
+  opsTimers.push(setTimeout(()=>{opsRunning=false; $('sc1').disabled=false; $('sc2').disabled=false;},t+100));
+}
+function runScenario(kind){
+  if(opsRunning) return;
+  resetOps(); opsRunning=true;
+  $('sc1').disabled=true; $('sc2').disabled=true;
+  $('opsLog').innerHTML='';
+  if(kind==='venc'){
+    seq([
+      [200,()=>{logLine('14:00','Contrato <span class="hl">R-2214</span> vencido. <b>Nivel 1:</b> notificación enviada.');}],
+      [1400,()=>{logLine('15:00','Sin respuesta. <b>Nivel 2:</b> advertencia de cargo por extensión.');}],
+      [1400,()=>{logLine('17:00','Sin pago. <b>Nivel 3:</b> <span class="hl">BLOQUEO DIFERIDO armado</span>.');
+        setGate(1,'pass','✓ vencimiento +3h'); setSpeed(46);}],
+      [1200,()=>{setGate(2,'wait','46 km/h — esperando'); logLine('17:01','Compuerta de velocidad: vehículo en movimiento. <b>Se espera detención natural.</b> Nunca se apaga en marcha.');}],
+      [1600,()=>{setSpeed(31);}],
+      [1000,()=>{setSpeed(12);}],
+      [1000,()=>{setSpeed(0); logLine('19:38','Vehículo detenido. Validando velocidad 0 sostenida (90 s)…');}],
+      [1500,()=>{setGate(2,'pass','✓ 0 km/h · 90 s'); logLine('19:40','<span class="okx">✓ Compuerta determinista superada.</span>');}],
+      [1100,()=>{setGate(3,'pass','✓ zona segura'); logLine('19:40','Contexto: estacionamiento comercial, iluminado, 19:40. <span class="okx">Clasificación: SEGURA.</span>');}],
+      [1300,()=>{setGate(4,'pass','✓ confirmado'); logLine('19:41','Operador M. Rivas revisa expediente y <span class="okx">confirma</span>. (v1: humano en el 100% de los casos.)');}],
+      [1200,()=>{logLine('19:41','<span class="hl">Encendido inhibido.</span> Vehículo bajo control de plataforma. Log inmutable registrado.');}],
+      [1600,()=>{logLine('09:20','Arrendatario contacta y paga extensión + cargo. Alternativa: recuperación asistida &lt;48 h.');}],
+      [1300,()=>{logLine('09:25','<span class="okx">✓ Caso cerrado.</span> Tiempo total: 19 h. Costo: $0 (resolución voluntaria).');}]
+    ]);
+  } else {
+    seq([
+      [200,()=>{logLine('02:14','<span class="cx">⚠ ALERTA:</span> salida de geocerca detectada. <b>Nivel 4:</b> causa grave.');
+        setGate(1,'pass','✓ geocerca'); setSpeed(64);}],
+      [1300,()=>{setGate(2,'block','✗ 64 km/h'); logLine('02:14','Compuerta de velocidad: <span class="cx">64 km/h — BLOQUEO VETADO</span>. La capa 2 es determinista: jamás en movimiento.');}],
+      [1400,()=>{logLine('02:15','Contactando arrendatario… sin respuesta. Telemetría en seguimiento continuo.');}],
+      [1600,()=>{setSpeed(38); logLine('02:31','Vehículo reduce velocidad. Ruta registrada punto a punto.');}],
+      [1200,()=>{setSpeed(0); logLine('02:47','Vehículo detenido. Validando velocidad 0 sostenida…');}],
+      [1400,()=>{setGate(2,'pass','✓ 0 km/h · 90 s'); setGate(3,'pass','✓ evaluado'); logLine('02:49','<span class="okx">✓ Compuerta superada.</span> Contexto: estación de servicio 24 h — segura.');}],
+      [1300,()=>{setGate(4,'pass','✓ confirmado'); logLine('02:50','Operador confirma con doble verificación (madrugada = revisión reforzada).');}],
+      [1200,()=>{logLine('02:50','<span class="hl">Encendido inhibido.</span> Equipo de recuperación despachado. Expediente para denuncia preparado: contrato, telemetría, comunicaciones.');}],
+      [1500,()=>{logLine('07:40','<span class="okx">✓ Vehículo recuperado.</span> Tiempo: 5,4 h. Costo $85 → cargado al depósito del arrendatario.');}]
+    ]);
+  }
+}
+
+/* ============ PROJECTION CHART ============ */
+(function(){
+  const svg=$('projChart'); if(!svg) return;
+  const data=[
+    {m:6, v:40, ing:3800, opx:9000},
+    {m:12,v:150,ing:14100,opx:13000},
+    {m:18,v:300,ing:28200,opx:17000},
+    {m:24,v:450,ing:42300,opx:22000}
+  ];
+  const W=640,H=300,L=64,R=24,T=18,B=40;
+  const x=m=>L+(m-6)/(24-6)*(W-L-R);
+  const y=v=>H-B-(v/45000)*(H-T-B);
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+  // grid + y labels
+  for(let g=0; g<=45000; g+=15000){
+    svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(g),y2:y(g),stroke:'var(--line)','stroke-width':1}));
+    const tx=el('text',{x:L-10,y:y(g)+4,'text-anchor':'end',fill:'var(--muted)','font-size':11,class:'tick'});
+    tx.textContent=g===0?'0':'$'+(g/1000)+'K'; svg.appendChild(tx);
+  }
+  // x labels
+  data.forEach(d=>{
+    const tx=el('text',{x:x(d.m),y:H-B+20,'text-anchor':'middle',fill:'var(--muted)','font-size':11,class:'tick'});
+    tx.textContent='mes '+d.m; svg.appendChild(tx);
+  });
+  // breakeven marker (~mes 12)
+  svg.appendChild(el('line',{x1:x(12),x2:x(12),y1:T,y2:H-B,stroke:'var(--accent)','stroke-width':1.4,'stroke-dasharray':'5 5',opacity:.75}));
+  const be=el('text',{x:x(12)+7,y:T+12,fill:'var(--accent-ink)','font-size':11,class:'tick'});
+  be.textContent='equilibrio ~mes 12'; svg.appendChild(be);
+  // series
+  const line=(key,color)=>{
+    const pts=data.map(d=>x(d.m)+','+y(d[key])).join(' ');
+    svg.appendChild(el('polyline',{points:pts,fill:'none',stroke:color,'stroke-width':2.4,'stroke-linejoin':'round','stroke-linecap':'round'}));
+    data.forEach(d=>svg.appendChild(el('circle',{cx:x(d.m),cy:y(d[key]),r:4.5,fill:color,stroke:'var(--surface)','stroke-width':2})));
+  };
+  line('opx','var(--ch2)'); line('ing','var(--ch1)');
+  // direct end labels
+  const lab=(key,color,txt,dy)=>{
+    const d=data[3];
+    const t=el('text',{x:x(d.m)-6,y:y(d[key])+dy,'text-anchor':'end',fill:color,'font-size':11.5,'font-weight':700,class:'tick'});
+    t.textContent=txt; svg.appendChild(t);
+  };
+  lab('ing','var(--ch1)','$42,3K',-10); lab('opx','var(--ch2)','$22K',-10);
+  // hover crosshair + tooltip
+  const cross=el('line',{y1:T,y2:H-B,stroke:'var(--muted)','stroke-width':1,opacity:0});
+  svg.appendChild(cross);
+  const hit=el('rect',{x:L,y:T,width:W-L-R,height:H-T-B,fill:'transparent'});
+  svg.appendChild(hit);
+  const tip=$('projTip'), card=$('projCard');
+  hit.addEventListener('mousemove',ev=>{
+    const r=svg.getBoundingClientRect();
+    const mx=(ev.clientX-r.left)*(W/r.width);
+    let best=data[0];
+    data.forEach(d=>{if(Math.abs(x(d.m)-mx)<Math.abs(x(best.m)-mx))best=d});
+    cross.setAttribute('x1',x(best.m)); cross.setAttribute('x2',x(best.m));
+    cross.setAttribute('opacity',.5);
+    const res=best.ing-best.opx;
+    tip.innerHTML='<b>Mes '+best.m+'</b> · '+best.v+' veh.<br>Ingreso $'+best.ing.toLocaleString('es-VE')+
+      '<br>OPEX $'+best.opx.toLocaleString('es-VE')+'<br>Resultado '+(res>=0?'+':'−')+'$'+Math.abs(res).toLocaleString('es-VE');
+    const cr=card.getBoundingClientRect();
+    tip.style.left=Math.min(cr.width-170,(ev.clientX-cr.left)+14)+'px';
+    tip.style.top=(ev.clientY-cr.top-10)+'px';
+    tip.style.opacity=1;
+  });
+  hit.addEventListener('mouseleave',()=>{tip.style.opacity=0; cross.setAttribute('opacity',0)});
+})();
+
+/* ============ FUNDS BARS ============ */
+(function(){
+  const box=$('fundsBars'); if(!box) return;
+  const rows=[
+    ['Producto e ingeniería',40000,'App, backend, telemetría, motor de reglas'],
+    ['Fondo de Garantía',35000,'Cuenta segregada — no disponible para operación'],
+    ['Hardware telemetría',25000,'~450–500 dispositivos con corte + SIM'],
+    ['Adquisición',20000,'Dueños fundadores + conductores'],
+    ['Legal y constitución',15000,'Holding, operadora, validación Sudeaseg'],
+    ['Operación y reserva',15000,'Soporte, reclamos, contingencia']
+  ];
+  const max=40000, tip=$('fundsTip'), card=$('fundsCard');
+  rows.forEach(([name,amt,det])=>{
+    const r=document.createElement('div'); r.className='hrow';
+    r.innerHTML='<span>'+name+'</span><div class="track"><i style="width:'+(amt/max*100)+'%"></i></div>'+
+      '<span class="val">$'+(amt/1000)+'K · '+Math.round(amt/1500)+'%</span>';
+    r.addEventListener('mousemove',ev=>{
+      const cr=card.getBoundingClientRect();
+      tip.textContent=det;
+      tip.style.left=Math.min(cr.width-220,(ev.clientX-cr.left)+12)+'px';
+      tip.style.top=(ev.clientY-cr.top+14)+'px';
+      tip.style.opacity=1;
+    });
+    r.addEventListener('mouseleave',()=>tip.style.opacity=0);
+    box.appendChild(r);
+  });
+})();
+</script>
