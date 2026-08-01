@@ -254,16 +254,6 @@ details.dataview table{border-collapse:collapse; margin-top:8px; width:100%}
 details.dataview td,details.dataview th{border:1px solid var(--line); padding:5px 9px; text-align:right; font-variant-numeric:tabular-nums}
 details.dataview th:first-child,details.dataview td:first-child{text-align:left}
 
-/* lexicon */
-.lex{display:grid; grid-template-columns:1fr 1fr; gap:18px}
-@media (max-width:640px){.lex{grid-template-columns:1fr}}
-.lexcol{border-radius:10px; border:1px solid var(--line); background:var(--surface); padding:18px 20px}
-.lexcol h4{font-size:.85rem; margin-bottom:10px}
-.lexcol.no h4{color:var(--crit)}.lexcol.yes h4{color:var(--ok)}
-.words{display:flex; flex-wrap:wrap; gap:7px}
-.words b{font-family:"Segoe UI",system-ui,sans-serif; font-weight:600; font-size:.8rem;
-  padding:4px 11px; border-radius:99px; background:var(--surface2); color:var(--ink2)}
-.lexcol.no .words b{text-decoration:line-through; opacity:.75}
 
 /* roadmap */
 .timeline{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px}
@@ -638,12 +628,6 @@ footer p{font-size:.85rem; color:var(--muted); max-width:70ch}
   </div>
   <div class="split">
     <div>
-      <div class="lex">
-        <div class="lexcol yes"><h4 class="disp">Léxico obligatorio</h4>
-          <div class="words"><b>Plan de Protección</b><b>exoneración</b><b>límite de responsabilidad</b><b>deducible</b></div></div>
-        <div class="lexcol no"><h4 class="disp">Prohibido en app, web y contratos</h4>
-          <div class="words"><b>seguro</b><b>póliza</b><b>cobertura</b><b>siniestro</b><b>prima</b></div></div>
-      </div>
       <div class="tiles num">
         <div class="tile"><b>$35.000</b><span>Semilla en cuenta segregada</span></div>
         <div class="tile"><b>8–12%</b><span>De cada reserva al fondo</span><small>~$12.000/mes a 300 veh.</small></div>
