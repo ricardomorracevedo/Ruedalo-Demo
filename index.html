@@ -407,7 +407,7 @@ footer p{font-size:.85rem; color:var(--muted); max-width:70ch}
         <p>Panel en vivo durante cada alquiler:</p>
         <ul>
           <li><b>Posición en tiempo real</b> y geocerca configurable (línea discontinua en el mapa).</li>
-          <li><b>Telemetría continua:</b> velocidad, estado del contrato, <em>heartbeat</em> del dispositivo — la pérdida de señal es en sí misma un evento de riesgo.</li>
+          <li><b>Telemetría continua:</b> velocidad, estado del contrato, señal de conexión del dispositivo — la pérdida de señal es en sí misma un evento de riesgo.</li>
           <li><b>Liquidación clara:</b> recibe el 85% de la tarifa; la suscripción de $5–8/mes lo ancla incluso en meses sin alquiler.</li>
         </ul>
       </div>
@@ -925,7 +925,7 @@ function runScenario(kind){
   rows.forEach(([name,amt,det])=>{
     const r=document.createElement('div'); r.className='hrow';
     r.innerHTML='<span>'+name+'</span><div class="track"><i style="width:'+(amt/max*100)+'%"></i></div>'+
-      '<span class="val">$'+(amt/1000)+'K · '+Math.round(amt/1500)+'%</span>';
+      '<span class="val">'+Math.round(amt/1500)+'%</span>';
     r.addEventListener('mousemove',ev=>{
       const cr=card.getBoundingClientRect();
       tip.textContent=det;
